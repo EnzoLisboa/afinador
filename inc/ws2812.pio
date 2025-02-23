@@ -1,0 +1,11 @@
+.program ws2812
+.side_set 1
+
+.wrap_target
+    out x, 1   side 0 [1]
+    jmp !x do_zero side 1 [1]
+do_one:
+    jmp do_one side 1 [1]   
+do_zero:
+    nop        side 0 [1]
+.wrap
