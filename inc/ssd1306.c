@@ -1,5 +1,6 @@
 #include "ssd1306.h"
 #include "font.h"
+#include <stdlib.h>
 
 void ssd1306_init(ssd1306_t *ssd, uint8_t width, uint8_t height, bool external_vcc, uint8_t address, i2c_inst_t *i2c) {
   ssd->width = width;
@@ -199,15 +200,9 @@ void ssd1306_draw_string(ssd1306_t *ssd, const char *str, uint8_t x, uint8_t y)
   }
 }
 
-void ssd1306_clear(ssd1306_t *ssd) {
-  // Itera por todas as posições do display
-  for (uint8_t y = 0; y < ssd->height; ++y) {
-      for (uint8_t x = 0; x < ssd->width; ++x) {
-          ssd1306_pixel(ssd, x, y, false);  // Define todos os pixels como apagados
-      }
-  }
-}
 
-void ssd1306_show(ssd1306_t *ssd) {
-  ssd1306_send_data(ssd);  // Envia o buffer para o display
+void ssd1306_draw_pixel(ssd1306_t *ssd, int x, int y) {
+  if (x >= 0 && x < ssd->width && y >= 0 && y < ssd->height) {
+      ssd->ram_buffer[x + (y / 8) * ssd->width] |= (1 << (y & 7));
+  }
 }

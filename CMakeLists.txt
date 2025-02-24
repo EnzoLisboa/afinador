@@ -37,20 +37,27 @@ pico_sdk_init()
 # Adiciona a pasta 'inc' ao caminho de inclusão
 include_directories(inc)
 
-# Adiciona os arquivos das bibliotecas SSD1306 e Neopixel
-file(GLOB LIBRARY_SOURCES "inc/ssd1306.c" "inc/neopixel.c")
+# Adiciona os arquivos das bibliotecas SSD1306 e WS2812 (Neopixel)
+file(GLOB LIBRARY_SOURCES "inc/ssd1306.c" "inc/ws2812.c")
 
 # Adiciona o executável
 add_executable(afinador main.c ${LIBRARY_SOURCES})
 
-# Gera o cabeçalho PIO para controle dos LEDs Neopixel
+# Gera o cabeçalho PIO para controle dos LEDs WS2812
 pico_generate_pio_header(afinador ${CMAKE_CURRENT_SOURCE_DIR}/inc/ws2812.pio)
 
 # Adiciona o código PIO ao projeto
 pico_add_extra_outputs(afinador)
 
 # Vincula o Pico SDK e as bibliotecas necessárias ao projeto
-target_link_libraries(afinador pico_stdlib hardware_pio hardware_i2c hardware_pwm hardware_adc)
+target_link_libraries(afinador 
+    pico_stdlib 
+    hardware_pio 
+    hardware_i2c 
+    hardware_pwm 
+    hardware_adc
+    hardware_clocks
+)
 
 # Habilita a saída USB (opcional)
 pico_enable_stdio_usb(afinador 1)
