@@ -16,7 +16,7 @@ uint sm = 0;      // Variável para a máquina de estados
 #define BUTTON_A_PIN 5
 #define BUTTON_B_PIN 6
 #define JOYSTICK_BUTTON_PIN 22
-#define BUZZER_PIN 21
+#define BUZZER_PIN 10
 #define LED_RED_PIN 13
 #define LED_GREEN_PIN 11
 #define LED_BLUE_PIN 12
@@ -82,6 +82,38 @@ void button_callback(uint gpio, uint32_t events) {
     }
 }
 
+// Inicializa o PWM no pino do buzzer
+void init_buzzer() {
+    gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM);  // Define o pino do buzzer como PWM
+    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
+    pwm_set_clkdiv(slice_num, 8.0);  // Reduz o clock (125MHz / 8 = 15.625MHz)
+}
+
+// Toca a nota A (440Hz)
+void play_diapason() {
+    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
+    uint channel = pwm_gpio_to_channel(BUZZER_PIN);
+
+    uint32_t sys_clock = 125000000;  // Clock do sistema: 125MHz
+    float clkdiv = 100.0;            // Reduz o divisor para evitar arredondamentos
+    uint16_t wrap_value = (sys_clock / clkdiv) / 430;  // 440Hz
+
+    pwm_set_clkdiv(slice_num, clkdiv);
+    pwm_set_wrap(slice_num, wrap_value);
+
+    // Reduz volume para 0,8% do duty cycle
+    pwm_set_chan_level(slice_num, channel, wrap_value / 125);  
+
+    pwm_set_enabled(slice_num, true);
+}
+
+// Para o som do buzzer
+void stop_diapason() {
+    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
+    pwm_set_enabled(slice_num, false);
+}
+
+
 // Função para inicializar os componentes
 void init_components() {
 
@@ -127,6 +159,7 @@ int main() {
     printf("Inicializando...\n");
     init_components();
     printf("Componentes inicializados.\n");
+    init_buzzer();  // Inicializa o PWM para o buzzer
 
     ssd1306_t ssd;
     ssd1306_init(&ssd, 128, 64, false, OLED_ADDRESS, I2C_PORT);
@@ -137,55 +170,43 @@ int main() {
     clearLedMatrix(ledMatrix);  // Limpa a matriz de LEDs
 
     while (true) {
-
         switch (current_state) {
             case MODE_SELECTION:
-                // Limpar a matriz de LEDs toda vez que o estado mudar
                 clearLedMatrix(ledMatrix);
                 displayPattern(ledMatrix, pio0, sm);  // Aplica o padrão limpo
-
+                stop_diapason(); // Para o buzzer ao sair do modo Diapasão
                 ssd1306_fill(&ssd, false); // Limpa o display
-
-                // Exibir textos (centralizados)
-                ssd1306_draw_string(&ssd, "1: Afinador", 4, 4);  // X = 4, Y = 4
-                ssd1306_draw_string(&ssd, "2: Diapasao", 4, 20); // X = 4, Y = 20
-
-                // Desenhar retângulo ao redor da opção selecionada
+                ssd1306_draw_string(&ssd, "1: Afinador", 4, 4);
+                ssd1306_draw_string(&ssd, "2: Diapasao", 4, 20);
                 if (selected_note_index == false) {
-                    ssd1306_rect(&ssd, 0, 0, 128, 16, true, false);  // Retângulo ao redor de "1: Afinador"
-                    ssd1306_send_data(&ssd); // Envia os dados para o display
+                    ssd1306_rect(&ssd, 0, 0, 128, 16, true, false);
+                    ssd1306_send_data(&ssd);
                 } else {
-                    ssd1306_rect(&ssd, 16, 0, 128, 16, true, false); // Retângulo ao redor de "2: Diapasao"
-                    ssd1306_send_data(&ssd); // Envia os dados para o display
+                    ssd1306_rect(&ssd, 16, 0, 128, 16, true, false);
+                    ssd1306_send_data(&ssd);
                 }
                 break;
 
             case TUNER_MODE:
-                // Limpar a matriz de LEDs toda vez que o estado mudar
                 clearLedMatrix(ledMatrix);
-                displayPattern(ledMatrix, pio0, sm);  // Aplica o padrão limpo
-
-                // Lógica do modo Afinador
-                ssd1306_fill(&ssd, false); // Limpa o display
-                ssd1306_draw_string(&ssd, "Modo Afinador", 18, 4);  // X = 18, Y = 4
-                ssd1306_send_data(&ssd); // Envia os dados para o display
+                displayPattern(ledMatrix, pio0, sm);
+                stop_diapason(); // Para o buzzer ao sair do modo Diapasão
+                ssd1306_fill(&ssd, false);
+                ssd1306_draw_string(&ssd, "Modo Afinador", 18, 4);
+                ssd1306_send_data(&ssd);
                 break;
 
             case DIAPASON_MODE:
-                // Lógica do modo Diapasão
-                ssd1306_fill(&ssd, false); // Limpa o display
-                ssd1306_draw_string(&ssd, "Modo Diapasao", 18, 4);  // X = 18, Y = 4
-                ssd1306_draw_string(&ssd, "440Hz", 49, 20);         // X = 49, Y = 20
-                ssd1306_send_data(&ssd); // Envia os dados para o display
-
-                // Exibe a nota A no painel de LEDs 5x5
-                getNote(5, ledMatrix);  // 5 é o índice para a nota A
-                displayPattern(ledMatrix, pio0, sm);  // Atualiza os LEDs para refletir a nota A
+                ssd1306_fill(&ssd, false);
+                ssd1306_draw_string(&ssd, "Modo Diapasao", 18, 4);
+                ssd1306_draw_string(&ssd, "440Hz", 49, 20);
+                ssd1306_send_data(&ssd);
+                play_diapason(); // Inicia o som de 440Hz
+                getNote(5, ledMatrix);
+                displayPattern(ledMatrix, pio0, sm);
                 break;
         }
-
         sleep_ms(100);
     }
-
     return 0;
 }
