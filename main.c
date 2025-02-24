@@ -20,6 +20,7 @@ uint sm = 0;      // Variável para a máquina de estados
 #define LED_RED_PIN 13
 #define LED_GREEN_PIN 11
 #define LED_BLUE_PIN 12
+#define MIC_PIN 28
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
