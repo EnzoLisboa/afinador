@@ -45,7 +45,7 @@ absolute_time_t last_press_time_JOY = {0};
 // Variáveis para o afinador
 #define SAMPLE_RATE 8000        // Taxa de amostragem (8 kHz)
 #define BUFFER_SIZE 256         // Tamanho do buffer para armazenar amostras
-#define FREQ_TOLERANCE 5.0      // Tolerância para considerar a nota afinada (em Hz)
+#define FREQ_TOLERANCE 6.0      // Tolerância para considerar a nota afinada (em Hz)
 #define VOLUME_THRESHOLD 125    // Limiar de volume (ajuste conforme necessário)
 #define SMOOTHING_FACTOR 0.1    // Fator de suavização (0.1 = 10% de influência da nova leitura)
 #define CALIBRATION_FACTOR 1.965  // Fator de calibração (ajuste conforme necessário)
