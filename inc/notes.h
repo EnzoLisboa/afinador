@@ -8,11 +8,11 @@
 // Cada matriz é um array de 25 elementos (5x5), onde 1 representa um LED aceso e 0 representa um LED apagado.
 const uint8_t notes[7][25] = {
     // Nota C
-    { 1, 1, 1, 1, 1,
+    { 0, 1, 1, 1, 1,
       1, 0, 0, 0, 0,
       1, 0, 0, 0, 0,
       1, 0, 0, 0, 0,
-      1, 1, 1, 1, 1 },
+      0, 1, 1, 1, 1 },
 
     // Nota D
     { 1, 1, 1, 1, 0,
