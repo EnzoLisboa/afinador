@@ -30,7 +30,7 @@ Este projeto implementa um afinador e diapasão utilizando um microcontrolador, 
 - **Microcontrolador:** Raspberry Pi Pico W.
 - **Tela OLED:** Display OLED 128x64 com interface I2C.
 - **Matriz de LEDs:** Matriz 5x5 de LEDs WS2812.
-- LED RGB
+- **LED RGB**
 - **Buzzer:** Buzzer passivo para gerar som.
 - **Microfone:** Sensor de áudio para detectar som.
 - **Botões:** Para interação com o usuário
