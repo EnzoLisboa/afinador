@@ -39,6 +39,7 @@ Este projeto implementa um **afinador e diapasão** utilizando um microcontrolad
 - **Buzzer**: Emite som de referência.
 - **Microfone**: Sensor de áudio para detecção de frequência.
 - **Botões**: Para interação com o usuário.
+- **Resistores e Fios**: Para proteção, pull-up e conexões.
 
 ---
 
@@ -76,8 +77,8 @@ Este projeto implementa um **afinador e diapasão** utilizando um microcontrolad
 | LED RGB (Azul)    | GPIO 12                   |
 | Buzzer            | GPIO 10                   |
 | Microfone         | GPIO 28                   |
-| Botão A           | GPI O5                    |
-| Botão B           | GPI O6                    |
+| Botão A           | GPIO 5                    |
+| Botão B           | GPIO 6                    |
 | Botão do Joystick | GPIO 22                   |
 
 ---
@@ -126,10 +127,10 @@ O código está organizado da seguinte forma:
 
 ---
 
-## Autoria
-Este projeto foi desenvolvido como parte da disciplina de **Sistemas Embarcados**, seguindo as diretrizes propostas para a implementação de um sistema original, funcional e inovador.
+## Demonstração
+- [Assista ao vídeo da demonstração](https://drive.google.com/file/d/1gb1-pXy0Ht7Mc7LsRbP60crJGM3ojYfn/view?usp=sharing)
 
 ---
 
-## Licença
-Este projeto é de **uso educacional** e pode ser modificado e distribuído conforme os termos da licença MIT.
+## Autoria
+Este projeto foi desenvolvido como parte da disciplina de **Sistemas Embarcados**, seguindo as diretrizes propostas para a implementação de um sistema original, funcional e inovador.
